@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cynical Magic 8 Ball</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .eight-ball {
+      background-color: black;
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .shake {
+      animation: shake 0.8s;
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(-5deg); }
+      75% { transform: rotate(3deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 60px solid transparent;
+      border-right: 60px solid transparent;
+      border-bottom: 100px solid #2222aa;
+      position: absolute;
+      top: 50px;
+    }
+
+    .answer {
+      position: absolute;
+      top: 80px;
+      color: white;
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 5px;
+      width: 120px;
+    }
+
+    #question-input {
+      margin-top: 20px;
+      padding: 10px;
+      width: 300px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #2222aa;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      height: 20px;
+    }
+
+    .credits {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cynical Magic 8 Ball</h1>
+  <div class="eight-ball" id="eight-ball">
+    <div class="triangle"></div>
+    <div class="answer" id="answer"></div>
+  </div>
+
+  <input type="text" id="question-input" placeholder="Type your question here..." />
+  <button onclick="shakeBall()">Ask the Ball</button>
+  <div class="error" id="error-message"></div>
+  <div class="credits">A product of Seven Sides. By <a href="https://www.instagram.com/xcaaaam/" target="_blank" style="color: #888; text-decoration: none;">@xcaaaam</a></div>
+
+  <script>
+    const responses = [
+      "Yes, but not in the way you're hoping.",
+      "No. But go ahead and pretend otherwise.",
+      "Most likely not, but don't let that stop you.",
+      "Sure... if you ignore reality entirely.",
+      "Depends. How desperate are you?",
+      "Yes, though it hardly matters anymore.",
+      "Not now. Maybe in another life. Or in a dream.",
+      "Could be, but the universe rarely works in your favor.",
+      "Yes. Though the outcome will still disappoint you.",
+      "No. But your optimism is mildly entertaining.",
+      "Yes, but you’re going to regret it.",
+      "No. Sometimes there's no lesson — just pain.",
+      "Keep waiting. Disappointment is also a form of answer.",
+      "Maybe. But don’t get your hopes up.",
+      "Yes. But you won’t realize it until it’s too late.",
+      "No. But you're free to live in denial.",
+      "Do what you want. The end result's the same.",
+      "Yes. But only because chaos needs to move forward.",
+      "No. And the sooner you accept it, the better.",
+      "In a way, yes. But not the way you'd like."
+    ];
+
+    function isValidQuestion(q) {
+      return q.trim().endsWith('?') && q.trim().length > 5;
+    }
+
+    function shakeBall() {
+      const input = document.getElementById('question-input');
+      const question = input.value;
+      const error = document.getElementById('error-message');
+      const ball = document.getElementById('eight-ball');
+      const answer = document.getElementById('answer');
+
+      if (!isValidQuestion(question)) {
+        error.textContent = "Please ask a proper question ending with a '?'.";
+        return;
+      }
+
+      error.textContent = "";
+      answer.textContent = "";
+      ball.classList.add("shake");
+
+      setTimeout(() => {
+        const response = responses[Math.floor(Math.random() * responses.length)];
+        answer.textContent = response;
+        ball.classList.remove("shake");
+      }, 800);
+    }
+  </script>
+</body>
+</html>
