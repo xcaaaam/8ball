@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magic 8 Ball</title>
+  <link rel="icon" href="8ball.png" type="image/png">
   <style>
+    :root {
+      --primary-color: #2222aa;
+      --primary-dark: #1a1a88;
+      --metal-gradient: linear-gradient(
+        135deg,
+        #2b2b2b 0%,
+        #3a3a3a 25%,
+        #1a1a1a 50%,
+        #3a3a3a 75%,
+        #2b2b2b 100%
+      );
+    }
+
     body {
       background-color: #1a1a1a;
       color: #f5f5f5;
@@ -15,10 +29,96 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--metal-gradient);
+      background-size: 400% 400%;
+      animation: metalShine 8s ease infinite;
+      opacity: 0.7;
+      z-index: -1;
+    }
+
+    @keyframes metalShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .welcome-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 10;
+      transition: opacity 1s ease-out;
+    }
+
+    .welcome-title {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      color: var(--primary-color);
+      text-shadow: 0 0 10px rgba(34, 34, 170, 0.7);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .welcome-ball {
+      width: 200px;
+      height: 200px;
+      background-color: black;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(34, 34, 170, 0.5);
+      animation: openBall 2s forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes openBall {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .welcome-ball::before {
+      content: '8';
+      font-size: 6rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .main-content {
+      opacity: 0;
+      transition: opacity 1s ease-in;
+      transition-delay: 2s;
     }
 
     h1 {
       margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(34, 34, 170, 0.5);
     }
 
     .eight-ball {
@@ -30,7 +130,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 40px rgba(34, 34, 170, 0.5);
       transition: transform 0.5s ease-in-out;
     }
 
@@ -51,9 +151,10 @@
       height: 0;
       border-left: 60px solid transparent;
       border-right: 60px solid transparent;
-      border-bottom: 100px solid #2222aa;
+      border-bottom: 100px solid var(--primary-color);
       position: absolute;
       top: 50px;
+      filter: drop-shadow(0 0 5px rgba(34, 34, 170, 0.7));
     }
 
     .answer {
@@ -64,32 +165,74 @@
       font-size: 0.9rem;
       padding: 5px;
       width: 120px;
+      text-shadow: 0 0 5px black;
     }
 
     #question-input {
       margin-top: 20px;
-      padding: 10px;
+      padding: 12px;
       width: 300px;
       font-size: 1rem;
       border: none;
       border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 10px rgba(34, 34, 170, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #question-input:focus {
+      outline: none;
+      box-shadow: 0 0 15px rgba(34, 34, 170, 0.7);
+      transform: scale(1.02);
     }
 
     button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #2222aa;
+      margin-top: 15px;
+      padding: 12px 25px;
+      background-color: var(--primary-color);
       color: white;
       border: none;
       border-radius: 5px;
       font-size: 1rem;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+
+    button:hover::after {
+      left: 100%;
     }
 
     .error {
-      color: red;
+      color: #ff5555;
       margin-top: 10px;
       height: 20px;
+      text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
     }
 
     .credits {
@@ -97,19 +240,37 @@
       font-size: 0.85rem;
       color: #888;
     }
+
+    .credits a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .credits a:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>Magic 8 Ball</h1>
-  <div class="eight-ball" id="eight-ball">
-    <div class="triangle"></div>
-    <div class="answer" id="answer"></div>
+  <div class="welcome-screen" id="welcome-screen">
+    <h1 class="welcome-title">MAGIC 8 BALL</h1>
+    <div class="welcome-ball"></div>
   </div>
 
-  <input type="text" id="question-input" placeholder="Type your question here..." />
-  <button onclick="shakeBall()">Ask the Ball</button>
-  <div class="error" id="error-message"></div>
-  <div class="credits">A product of Seven Sides. By <a href="https://www.instagram.com/xcaaaam/" target="_blank" style="color: #888; text-decoration: none;">@xcaaaam</a></div>
+  <div class="main-content" id="main-content">
+    <h1>Magic 8 Ball</h1>
+    <div class="eight-ball" id="eight-ball">
+      <div class="triangle"></div>
+      <div class="answer" id="answer"></div>
+    </div>
+
+    <input type="text" id="question-input" placeholder="Type your question here..." />
+    <button onclick="shakeBall()">Ask the Ball</button>
+    <div class="error" id="error-message"></div>
+    <div class="credits">A product of Seven Sides. By <a href="https://www.instagram.com/xcaaaam/" target="_blank">@xcaaaam</a></div>
+  </div>
 
   <script>
     const responses = [
@@ -123,17 +284,28 @@
       "Could be, but the universe rarely works in your favor.",
       "Yes. Though the outcome will still disappoint you.",
       "No. But your optimism is mildly entertaining.",
-      "Yes, but you’re going to regret it.",
+      "Yes, but you're going to regret it.",
       "No. Sometimes there's no lesson — just pain.",
       "Keep waiting. Disappointment is also a form of answer.",
-      "Maybe. But don’t get your hopes up.",
-      "Yes. But you won’t realize it until it’s too late.",
+      "Maybe. But don't get your hopes up.",
+      "Yes. But you won't realize it until it's too late.",
       "No. But you're free to live in denial.",
       "Do what you want. The end result's the same.",
       "Yes. But only because chaos needs to move forward.",
       "No. And the sooner you accept it, the better.",
       "In a way, yes. But not the way you'd like."
     ];
+
+    // Mostrar animación de bienvenida y luego transición al contenido principal
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('welcome-screen').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('welcome-screen').style.display = 'none';
+          document.getElementById('main-content').style.opacity = '1';
+        }, 1000);
+      }, 3000);
+    });
 
     function isValidQuestion(q) {
       return q.trim().endsWith('?') && q.trim().length > 5;
@@ -147,7 +319,7 @@
       const answer = document.getElementById('answer');
 
       if (!isValidQuestion(question)) {
-        error.textContent = "Please ask a proper question ending with a '?'.";
+        error.textContent = "Please ask a proper question ending with a '?' and at least 5 characters.";
         return;
       }
 
@@ -161,6 +333,13 @@
         ball.classList.remove("shake");
       }, 800);
     }
+
+    // Permitir usar la tecla Enter para activar el botón
+    document.getElementById('question-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        shakeBall();
+      }
+    });
   </script>
 </body>
 </html>
